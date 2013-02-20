@@ -3,8 +3,9 @@ package com.redhat.salab.messaging;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -17,7 +18,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 public class MessagingController {
-	private static final Logger logger = Logger.getLogger(MessagingController.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(MessagingController.class);
 
 	private AppSettings settings;
 	private MessagingContext lastContext;
@@ -60,17 +61,18 @@ public class MessagingController {
 			}
 			
 		} catch (NamingException e) {
-			logger.log(Level.SEVERE, "Failed to connect to naming context", e);
+			log.error("Failed to connect to naming context", e);
 			throw new RuntimeException("Failed to connect to naming context");
 		} catch (JMSException e) {
-			logger.log(Level.SEVERE, "Failed to configure JMS", e);
+			log.error("Failed to configure JMS", e);
 			throw new RuntimeException("Failed to connect to naming context");
 		}
 	}
 	
 	private MessagingContext createProducer(int index) throws NamingException, JMSException {
 		MessagingContext context = new MessagingContext();
-		context.setContextID("Producer[" + index + ", " + UUID.randomUUID().toString() + "]");
+		String id = String.format("Producer[%d, %s]", index, UUID.randomUUID().toString());
+		context.setContextID(id);
 		context.setProducer(true); 
 
 		// Create, or reuse, the Naming Context, and JMS ConnectionFactory / Connection / Destination / Session
@@ -85,13 +87,16 @@ public class MessagingController {
 		Thread thread = new Thread(producerThread, context.getContextID());
 		thread.start();
 		
+		log.info("Started producer {}", context.getContextID());
+		
 		lastContext = context;
 		return context;
 	}
 	
 	private MessagingContext createConsumer(int index) throws NamingException, JMSException {
 		MessagingContext context = new MessagingContext();
-		context.setContextID("Consumer[" + index + ", " + UUID.randomUUID().toString() + "]");
+		String id = String.format("Consumer[%d, %s]", index, UUID.randomUUID().toString());
+		context.setContextID(id);
 		context.setConsumer(true);
 		
 		// Create, or reuse, the Naming Context, and JMS ConnectionFactory / Connection / Destination / Session
@@ -108,6 +113,8 @@ public class MessagingController {
 		MessagingThread consumerThread = new MessagingThread(settings, context);
 		Thread thread = new Thread(consumerThread, context.getContextID());
 		thread.start();
+		
+		log.info("Started consumer {}", context.getContextID());
 		
 		lastContext = context;
 		return context;
@@ -191,7 +198,7 @@ public class MessagingController {
 	
 	private void cleanup(MessagingContext context)  {
 		try {
-			logger.log(Level.FINE, "Cleaning up JMS context " + context);
+			log.debug("Cleaning up JMS context {}", context);
 			
 			if(context.getMessageProducer() != null)
 				context.getMessageProducer().close();
@@ -207,12 +214,12 @@ public class MessagingController {
 			
 			if(context.getNamingContext() != null)
 				context.getNamingContext().close();
-			
-			logger.log(Level.FINE, "Cleaned up JMS context " + context);
+
+			log.debug("Cleaned up JMS context {}", context);
 		} catch (JMSException e) {
-			logger.log(Level.SEVERE, "Failed to clean up JMS context " + context, e);
+			log.error("Failed to clean up JMS context: " + context, e);
 		} catch (NamingException e) {
-			logger.log(Level.SEVERE, "Failed to clean up Naming context " + context, e);
+			log.error("Failed to clean up Naming context: " + context, e);
 		}	
 	}
 	
@@ -220,7 +227,7 @@ public class MessagingController {
 		try {
 			Thread.sleep(ms);
 		} catch (InterruptedException e) {
-			logger.log(Level.SEVERE, "Messaging controller interrupted.", e);
+			log.error("Messaging controller interrupted.", e);
 		}
 	}
 	

@@ -133,6 +133,10 @@ To execute the generator from the command line, make sure `java` is in your path
 	cd <project_path>/ha-messaging-sandbox
 	java -cp target/ha-messaging-sandbox-1.0-jar-with-dependencies.jar com.redhat.salab.messaging.Main [PathToAppProperties]
 
+For more verbose logging, use:
+	
+	java -cp target/ha-messaging-sandbox-1.0-jar-with-dependencies.jar -Dlog4j.configuration=etc/log4j.debug.properties com.redhat.salab.messaging.Main [PathToAppProperties]
+	
 # 3. Building
 
 ## 3.1 Configure Maven

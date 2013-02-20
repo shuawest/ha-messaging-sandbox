@@ -4,11 +4,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class AppSettings {
-	private static final Logger logger = Logger.getLogger(AppSettings.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(AppSettings.class);
 	
 	public static final String CONNECTION_FACTORY = "connection.factory";
 	public static final String DESTINATION_NAME = "destination.name";
@@ -109,7 +110,7 @@ public class AppSettings {
 	        props.load(inputStream);  
 			overlaySystemProperties(props);
 	    } catch(IOException e){  
-			logger.log(Level.SEVERE, "Properties file '" + filepath + "' failed to load"); 
+			log.error("Properties file '{}' failed to load", filepath); 
 	    } 
 	}
 	
@@ -120,11 +121,11 @@ public class AppSettings {
 			props.load(inputStream);
 			overlaySystemProperties(props);
 	    } catch(IOException e){  
-			logger.log(Level.SEVERE, "Properties file '" + classpath + "' failed to load from claspath"); 
+			log.error("Properties file '{}' failed to load from classpath",classpath); 
 	    } 
 	}
 	
-	private void overlaySystemProperties(Properties properties) {		
+	public void overlaySystemProperties(Properties properties) {		
 		for(String key : properties.stringPropertyNames()) {
 			System.setProperty(key, properties.getProperty(key));
 		}

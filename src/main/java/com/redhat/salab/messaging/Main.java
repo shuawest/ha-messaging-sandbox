@@ -1,33 +1,50 @@
 package com.redhat.salab.messaging;
 
-import java.util.logging.Logger;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Main {
-	private static final Logger logger = Logger.getLogger(Main.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-	public static void main(String[] argv) {
-		AppSettings settings = new AppSettings();
-		settings.loadPropertiesFromClasspath("default.properties");
-		for(String arg : argv) {
-			settings.loadPropertiesFromFile(arg);
-		}
-			
+	public static void main(String[] cliArguments) {
+		AppSettings settings = processProperties(cliArguments);
+		
 		long totalCount = settings.getMessageCount() * settings.getProducerCount();
 		
-		logger.info("Starting messaging test...");
-		logger.info("- Producing " + totalCount + " messages with " + settings.getProducerCount() + " producers.");
-		logger.info("- Consuming messages with " + settings.getConsumerCount() + " consumers.");
+		log.info("Starting messaging test...");
+		log.info("- Producing {} messages with {} producers.", totalCount, settings.getProducerCount());
+		log.info("- Consuming messages with {} consumers.", settings.getConsumerCount());
 
 		MessagingController controller = new MessagingController(settings);
 		controller.execute();
 		
 		for(MessagingContext context : controller.getConsumerContexts()) {
-			logger.info("Consumed " + context.getMessageCount() + 
-					" messages on consumer '" + context.getContextID() + 
-					"':\n" + context.getMessages());
+			log.info("Consumed {} messages on consumer '{}':\n{}", context.getMessageCount(), context.getContextID(), context.getMessages());
 		}
 		
-		logger.info("Complete.");
+		log.info("Complete.");
+	}
+	
+	private static AppSettings processProperties(String[] cliArguments) {
+		AppSettings settings = new AppSettings();
+		
+		// Backup current system properties
+		Properties sysprops = System.getProperties();
+		
+		// Start by setting properties defined in system properties
+		settings.loadPropertiesFromClasspath("default.properties");
+		
+		// Load property file referenced command line - if specified
+		for(String arg : cliArguments) {
+			settings.loadPropertiesFromFile(arg);
+		}
+		
+		// Overlay system properties on top so that java -Dprop=value may be specified
+		settings.overlaySystemProperties(sysprops);
+		
+		return settings;
 	}
 }

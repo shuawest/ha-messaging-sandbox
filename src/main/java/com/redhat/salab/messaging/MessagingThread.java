@@ -1,14 +1,14 @@
 package com.redhat.salab.messaging;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 
 
 public class MessagingThread implements Runnable {
-	private static final Logger logger = Logger.getLogger(MessagingThread.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(MessagingThread.class);
 	
 	private AppSettings settings;
 	private MessagingContext context;
@@ -23,7 +23,7 @@ public class MessagingThread implements Runnable {
 		while(!context.isDone()) {
 			try {
 				if(context.isPaused()) {
-					logger.log(Level.FINE, this+" paused, waiting to be unpaused...");
+					log.trace("{} paused, waiting to be unpaused...", context);
 					continue;
 				}
 				
@@ -34,14 +34,14 @@ public class MessagingThread implements Runnable {
 				
 				Thread.sleep(settings.getMessageDelayMs());			
 			} catch (JMSException jmsEx) {
-				logger.log(Level.SEVERE, context+" received a JMS error", jmsEx);
+				log.error(context+" received a JMS error", jmsEx);
 				return;
 			} catch (InterruptedException threadEx) {
-				logger.log(Level.SEVERE, context+" interrupted", threadEx);	
+				log.error(context+" interrupted", threadEx);	
 				return;
 			} 
 		}
-		logger.log(Level.INFO, "Thread is done");
+		log.debug("{} Thread is done", context);
 	}
 	
 	private void produce() throws JMSException {
@@ -52,11 +52,11 @@ public class MessagingThread implements Runnable {
 		context.getMessageProducer().send(jmsMessage); 
 		context.appendMessage(msg);	
 		
-		logger.log(Level.FINE, context.getContextID()+" produced message '"+msg+"'");
+		log.debug("{} produced message '{}'", context, msg);
 		
 		if(context.getMessageCount() == settings.getMessageCount()) {
 			context.setDone(true);
-			logger.log(Level.FINE, context.getContextID()+" done producing messages");
+			log.info("{} done producing messages.", context);
 		}
 	}
 	
@@ -65,7 +65,7 @@ public class MessagingThread implements Runnable {
 		if(jmsMessage != null) {
 			String msg = jmsMessage.getText();			
 			
-			logger.log(Level.FINE, context+" consumed message '"+msg+"'");
+			log.debug("{} consumer message '{}'", context, msg);
 			
 			context.appendMessage(msg);	
 			context.incrementMessageCount();	

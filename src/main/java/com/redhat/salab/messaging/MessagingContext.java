@@ -132,5 +132,11 @@ public class MessagingContext {
 	}
 	public void appendMessage(String msg) {
 		this.messages = messages + msg + MESSAGE_DELIMITER;
-	}    
+	} 
+	
+	
+	@Override
+	public String toString() {
+		return contextID;
+	}
 }
