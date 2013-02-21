@@ -569,13 +569,15 @@
                         <connection-factory name="RemoteConnectionFactory">
 			    <ha>true</ha>
 			    <discovery-group-ref discovery-group-name="dg-group1"/>
-                            <!--
-			    <connectors>
-                                <connector-ref connector-name="netty"/>
-                            </connectors>-->
                             <entries>
                                 <entry name="java:jboss/exported/jms/RemoteConnectionFactory"/>
                             </entries>
+		            <retry-interval>2000</retry-interval>
+			    <reconnect-attempts>-1</reconnect-attempts>
+		            <max-retry-interval>2000</max-retry-interval>
+			    <retry-interval-multiplier>2.0</retry-interval-multiplier>
+			    <failover-on-initial-connection>true</failover-on-initial-connection>
+			    <failover-on-server-shutdown>true</failover-on-server-shutdown>
                         </connection-factory>
                         <pooled-connection-factory name="hornetq-ra">
                             <transaction mode="xa"/>
