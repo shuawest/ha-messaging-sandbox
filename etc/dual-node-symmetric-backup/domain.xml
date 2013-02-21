@@ -567,8 +567,10 @@
                             </entries>
                         </connection-factory>
                         <connection-factory name="RemoteConnectionFactory">
+			    <ha>true</ha>
 			    <discovery-group-ref discovery-group-name="dg-group1"/>
-                            <!--<connectors>
+                            <!--
+			    <connectors>
                                 <connector-ref connector-name="netty"/>
                             </connectors>-->
                             <entries>
@@ -592,14 +594,11 @@
                             <durable>true</durable>
                         </jms-queue>
                     </jms-destinations>
-
                 </hornetq-server>
-<!--
                 <hornetq-server name="hornetq-backup">
                     <backup>true</backup>
                     <clustered>true</clustered>
                     <persistence-enabled>true</persistence-enabled>
-                    <security-enabled>false</security-enabled>
                     <cluster-user>admin</cluster-user>
                     <cluster-password>admin1</cluster-password>
                     <failover-on-shutdown>true</failover-on-shutdown>
@@ -608,26 +607,24 @@
                     <journal-type>ASYNCIO</journal-type>
                     <journal-file-size>102400</journal-file-size>
                     <journal-min-files>2</journal-min-files>
-		    
+		    <!-- SHARED JOURNAL CONFIG -->
                     <paging-directory path="paging" relative-to="hornetq.journal.backup.dir"/>
                     <bindings-directory path="bindings" relative-to="hornetq.journal.backup.dir"/>
                     <journal-directory path="journal" relative-to="hornetq.journal.backup.dir"/>
                     <large-messages-directory path="largemessages" relative-to="hornetq.journal.backup.dir"/>
-
+		    <!-- MANAGEMENT CONFIG -->
 		    <jmx-management-enabled>true</jmx-management-enabled>
 		    <jmx-domain>hornetq-backup</jmx-domain>
 		    <message-counter-enabled>true</message-counter-enabled>
 		    <message-counter-sample-period>1</message-counter-sample-period>
 		    <message-counter-max-day-history>5</message-counter-max-day-history>
-
                     <connectors>
                 	<netty-connector name="netty" socket-binding="messaging-backup"/>
+			<in-vm-connector name="in-vm" server-id="0"/>
                     </connectors>
-
                     <acceptors>
                         <netty-acceptor name="netty" socket-binding="messaging-backup"/>
                     </acceptors>
-
                     <broadcast-groups>
                         <broadcast-group name="bg-group1">
                             <socket-binding>messaging-group</socket-binding>
@@ -635,14 +632,12 @@
                             <connector-ref>netty</connector-ref>
                         </broadcast-group>
                     </broadcast-groups>
-
                     <discovery-groups>
                         <discovery-group name="dg-group1">
                             <socket-binding>messaging-group</socket-binding>
                             <refresh-timeout>10000</refresh-timeout>
                         </discovery-group>
                     </discovery-groups>
-
                     <cluster-connections>
                         <cluster-connection name="my-cluster">
                             <address>jms</address>
@@ -653,10 +648,7 @@
                             <use-duplicate-detection>true</use-duplicate-detection>
                         </cluster-connection>
                     </cluster-connections>
-
-	    </hornetq-server>
--->
-
+	        </hornetq-server>
             </subsystem>
             <subsystem xmlns="urn:jboss:domain:modcluster:1.1">
                 <mod-cluster-config advertise-socket="modcluster" connector="ajp">

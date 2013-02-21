@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jms.JMSException;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
 import javax.jms.TextMessage;
 
 
@@ -23,7 +25,7 @@ public class MessagingThread implements Runnable {
 		while(!context.isDone()) {
 			try {
 				if(context.isPaused()) {
-					log.trace("{} paused, waiting to be unpaused...", context);
+					log.trace("Paused, waiting to be unpaused...");
 					continue;
 				}
 				
@@ -34,25 +36,25 @@ public class MessagingThread implements Runnable {
 				
 				Thread.sleep(settings.getMessageDelayMs());			
 			} catch (JMSException jmsEx) {
-				log.error(context+" received a JMS error", jmsEx);
+				log.error("Received a JMS error", jmsEx);
 				return;
 			} catch (InterruptedException threadEx) {
-				log.error(context+" interrupted", threadEx);	
+				log.error("Interrupted", threadEx);	
 				return;
 			} 
 		}
-		log.debug("{} Thread is done", context);
+		log.trace("Thread shutting down.");
 	}
 	
 	private void produce() throws JMSException {
 		context.incrementMessageCount();
 		
 		String msg = String.format("Message %5d from %s", context.getMessageCount(), context.getContextID());
-		TextMessage jmsMessage = context.getSession().createTextMessage(msg);							
-		context.getMessageProducer().send(jmsMessage); 
+		TextMessage jmsMessage = context.getSession().createTextMessage(msg);
+		context.getMessageProducer().send(jmsMessage); 		
 		context.appendMessage(msg);	
 		
-		log.debug("{} produced message '{}'", context, msg);
+		log.debug("Produced message '{}'", msg);
 		
 		if(context.getMessageCount() == settings.getMessageCount()) {
 			context.setDone(true);
@@ -61,11 +63,12 @@ public class MessagingThread implements Runnable {
 	}
 	
 	private void consume() throws JMSException {
-		TextMessage jmsMessage = (TextMessage)context.getMessageConsumer().receiveNoWait();
+		TextMessage jmsMessage = (TextMessage)context.getMessageConsumer().receiveNoWait();			
+		
 		if(jmsMessage != null) {
 			String msg = jmsMessage.getText();			
 			
-			log.debug("{} consumer message '{}'", context, msg);
+			log.debug("Consumed message '{}'", msg);
 			
 			context.appendMessage(msg);	
 			context.incrementMessageCount();	

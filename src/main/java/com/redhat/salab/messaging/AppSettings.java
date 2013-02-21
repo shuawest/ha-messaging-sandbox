@@ -13,11 +13,13 @@ public class AppSettings {
 	
 	public static final String CONNECTION_FACTORY = "connection.factory";
 	public static final String DESTINATION_NAME = "destination.name";
+	
 	public static final String SHARE_CONTEXT = "share.context";
 	public static final String SHARE_DESTINATION = "share.destination";
 	public static final String SHARE_FACTORY = "share.connection.factory";
 	public static final String SHARE_CONNECTION = "share.connection";
 	public static final String SHARE_SESSION = "share.session";
+	
 	public static final String USERNAME = "username";
 	public static final String PASSWORD = "password";
 	public static final String MESSAGE_COUNT = "message.count";

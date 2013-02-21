@@ -46,10 +46,18 @@ This application is currently targeted towards HornetQ, but an attempt will be m
 ## 1.3 Documentation
 
 + JBoss EAP 6 Administration and Configuration Guide: 
-	https://access.redhat.com/knowledge/docs/en-US/JBoss_Enterprise_Application_Platform/6/html-single/Administration_and_Configuration_Guide/index.html
-+ HornetQ User Guide (oriented to EAP 5x but still applicable and useful): 
-	https://access.redhat.com/knowledge/docs/en-US/JBoss_Enterprise_Application_Platform/5/html-single/HornetQ_User_Guide/index.html
 
+<https://access.redhat.com/knowledge/docs/en-US/JBoss_Enterprise_Application_Platform/6/html-single/Administration_and_Configuration_Guide/index.html>
+
++ HornetQ User Guide (oriented to EAP 5x but still applicable and useful): 
+
+<https://access.redhat.com/knowledge/docs/en-US/JBoss_Enterprise_Application_Platform/5/html-single/HornetQ_User_Guide/index.html>
+
++ JBoss AS 7.1 Community Documentation:
+
+<https://docs.jboss.org/author/display/AS71/Admin+Guide>
+	
+	
 ## 1.4 Author
 
 Josh West
@@ -123,6 +131,26 @@ Execute the `EAP_HOME/bin/add-user.sh` script to create a JMS user. Select:
 ### Start the JBoss Server
 
 	`EAP_HOME/bin/domain.sh`
+
+### Controlling instances
+
+In domain mode you can use the following commands to control individual server instances.
+
+	cd EAP_HOME
+	bin/jboss-cli.sh --connect 
+
+Stop a server instance:
+
+	/host=master/server-config=hornetq1:stop
+
+Start a server instance:
+
+	/host=master/server-config=hornetq1:start
+
+Check the status of server instance:
+
+	ls -l /host=master/server-config=hornetq1
+
 
 ## 2.2. Running the Generator
 

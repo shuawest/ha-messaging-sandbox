@@ -173,17 +173,19 @@ public class MessagingController {
 			if(!producer.isDone())
 				return false;
 		
-		long targetCount = settings.getMessageCount() * settings.getProducerCount() + settings.getConsumeAdditionalCount();
-		long consumedCount = 0;
-		for(MessagingContext consumer : consumerContexts) {
-			consumedCount += consumer.getMessageCount();
-		}
-		
-		if(consumedCount < targetCount)
-			return false;
+		if(settings.getConsumerCount() != 0) {
+			long targetCount = settings.getMessageCount() * settings.getProducerCount() + settings.getConsumeAdditionalCount();
+			long consumedCount = 0;
+			for(MessagingContext consumer : consumerContexts) {
+				consumedCount += consumer.getMessageCount();
+			}
 			
-		for(MessagingContext consumer : consumerContexts) {
-			consumer.setDone(true);
+			if(consumedCount < targetCount)
+				return false;
+				
+			for(MessagingContext consumer : consumerContexts) {
+				consumer.setDone(true);
+			}
 		}
 		
 		return true;
