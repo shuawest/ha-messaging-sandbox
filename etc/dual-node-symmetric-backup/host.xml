@@ -4,7 +4,7 @@
 
     <paths>
         <!--<path name="hornetq.journal.root.dir" path="domain/journals" relative-to="jboss.home.dir" />-->
-        <path name="hornetq.journal.root.dir" path="/media/shuabay/dev/servers/eap600ga/jboss-eap-6.0/domain/journals" />
+        <path name="hornetq.journal.root.dir" path="/media/shuabay/dev/servers/eap601/jboss-eap-6.0/domain/journals" />
     </paths>
 
     <management>

@@ -1,11 +1,10 @@
 package com.redhat.salab.messaging;
 
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -17,9 +16,17 @@ import javax.jms.Session;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.jboss.sasl.JBossSaslProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class MessagingController {
 	private static final Logger log = LoggerFactory.getLogger(MessagingController.class);
-
+	
+	static {
+		Security.addProvider(new JBossSaslProvider());
+	}
+	
 	private AppSettings settings;
 	private MessagingContext lastContext;
 	private List<MessagingContext> producerContexts = new ArrayList<MessagingContext>();
@@ -125,6 +132,17 @@ public class MessagingController {
 		if(settings.isSharingContext() && lastContext != null) {
 			context.setNamingContext(lastContext.getNamingContext());
 		} else {
+			/*final Properties env = new Properties();
+			env.setProperty("java.naming.factory.initial", System.getProperty("java.naming.factory.initial"));
+			env.setProperty("java.naming.factory.url.pkgs", System.getProperty("java.naming.factory.url.pkgs"));
+			env.setProperty("java.naming.provider.url", System.getProperty("java.naming.provider.url"));
+			env.setProperty("java.naming.security.principal", System.getProperty("java.naming.security.principal"));
+			env.setProperty("java.naming.security.credentials", System.getProperty("java.naming.security.credentials"));
+			env.setProperty("jboss.naming.client.ejb.context", System.getProperty("jboss.naming.client.ejb.context"));
+			env.setProperty("jboss.naming.client.connect.options.org.xnio.Options.SASL_POLICY_NOPLAINTEXT", System.getProperty("jboss.naming.client.connect.options.org.xnio.Options.SASL_POLICY_NOPLAINTEXT"));
+			env.setProperty("jboss.naming.client.connect.options.org.xnio.Options.SASL_DISALLOWED_MECHANISMS", "JBOSS-LOCAL-USER");
+
+			context.setNamingContext(new InitialContext(env));*/
 			context.setNamingContext(new InitialContext());
 		}
 		

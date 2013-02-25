@@ -536,6 +536,11 @@
                             <address>jms</address>
                             <connector-ref>netty</connector-ref>
                             <discovery-group-ref discovery-group-name="dg-group1"/>
+			    <forward-when-no-consumers>true</forward-when-no-consumers>
+			    <reconnect-attempts>-1</reconnect-attempts>
+			    <max-hops>1</max-hops>
+			    <retry-interval>2000</retry-interval>
+			    <use-duplicate-detection>true</use-duplicate-detection>
                         </cluster-connection>                    
 		    </cluster-connections>
                     <security-settings>
@@ -650,6 +655,14 @@
                             <use-duplicate-detection>true</use-duplicate-detection>
                         </cluster-connection>
                     </cluster-connections>
+                    <security-settings>
+                        <security-setting match="#">
+                            <permission type="send" roles="guest"/>
+                            <permission type="consume" roles="guest"/>
+                            <permission type="createNonDurableQueue" roles="guest"/>
+                            <permission type="deleteNonDurableQueue" roles="guest"/>
+                        </security-setting>
+                    </security-settings>
 	        </hornetq-server>
             </subsystem>
             <subsystem xmlns="urn:jboss:domain:modcluster:1.1">
