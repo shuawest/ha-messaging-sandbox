@@ -133,18 +133,7 @@ public class MessagingController {
 		if(settings.isSharingContext() && lastContext != null) {
 			context.setNamingContext(lastContext.getNamingContext());
 		} else {
-			/*final Properties env = new Properties();
-			env.setProperty("java.naming.factory.initial", System.getProperty("java.naming.factory.initial"));
-			env.setProperty("java.naming.factory.url.pkgs", System.getProperty("java.naming.factory.url.pkgs"));
-			env.setProperty("java.naming.provider.url", System.getProperty("java.naming.provider.url"));
-			env.setProperty("java.naming.security.principal", System.getProperty("java.naming.security.principal"));
-			env.setProperty("java.naming.security.credentials", System.getProperty("java.naming.security.credentials"));
-			env.setProperty("jboss.naming.client.ejb.context", System.getProperty("jboss.naming.client.ejb.context"));
-			env.setProperty("jboss.naming.client.connect.options.org.xnio.Options.SASL_POLICY_NOPLAINTEXT", System.getProperty("jboss.naming.client.connect.options.org.xnio.Options.SASL_POLICY_NOPLAINTEXT"));
-			env.setProperty("jboss.naming.client.connect.options.org.xnio.Options.SASL_DISALLOWED_MECHANISMS", "JBOSS-LOCAL-USER");
-
-			context.setNamingContext(new InitialContext(env));*/
-			context.setNamingContext(new InitialContext());
+			context.setNamingContext(new InitialContext(System.getProperties()));
 		}
 		
 		// Connection Factory

@@ -35,7 +35,7 @@
     </extensions>
     <paths>
    	<!-- root directory for all journals - must be single filesystem, or shared via NFS (RHEL only) or GFS2 -->
-        <path name="hornetq.journal.root.dir" path="/home/jowest/dev/servers/eap601/jboss-eap-6.0" />
+        <path name="hornetq.journal.root.dir" path="/data/jboss-eap-6.0/journals" />
         <!-- next two entries need to be flipped for server2 -->
 	<path name="hornetq.journal.active.dir" path="journalB" relative-to="hornetq.journal.root.dir" />
         <path name="hornetq.journal.backup.dir" path="journalA" relative-to="hornetq.journal.root.dir" />
@@ -447,6 +447,7 @@
                         <discovery-group name="dg-group1">
                             <socket-binding>messaging-group</socket-binding>
                             <refresh-timeout>10000</refresh-timeout>
+			    <initial-wait-timeout>10000</initial-wait-timeout>
                         </discovery-group>
                     </discovery-groups>
                     <cluster-connections>
@@ -505,8 +506,8 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:pojo:1.0"/>
         <subsystem xmlns="urn:jboss:domain:remoting:1.1">
-            <!--<connector name="remoting-connector" socket-binding="remoting" security-realm="ApplicationRealm"/>-->
-            <connector name="remoting-connector" socket-binding="remoting" />
+            <connector name="remoting-connector" socket-binding="remoting" security-realm="ApplicationRealm"/>
+            <!--<connector name="remoting-connector" socket-binding="remoting" />-->
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:resource-adapters:1.0"/>
         <subsystem xmlns="urn:jboss:domain:sar:1.0"/>

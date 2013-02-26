@@ -447,6 +447,7 @@
                         <discovery-group name="dg-group1">
                             <socket-binding>messaging-group</socket-binding>
                             <refresh-timeout>10000</refresh-timeout>
+			    <initial-wait-timeout>10000</initial-wait-timeout>
                         </discovery-group>
                     </discovery-groups>
                     <cluster-connections>
@@ -505,8 +506,8 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:pojo:1.0"/>
         <subsystem xmlns="urn:jboss:domain:remoting:1.1">
-            <!--<connector name="remoting-connector" socket-binding="remoting" security-realm="ApplicationRealm"/>-->
-            <connector name="remoting-connector" socket-binding="remoting" />
+            <connector name="remoting-connector" socket-binding="remoting" security-realm="ApplicationRealm"/>
+            <!--<connector name="remoting-connector" socket-binding="remoting" />-->
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:resource-adapters:1.0"/>
         <subsystem xmlns="urn:jboss:domain:sar:1.0"/>
