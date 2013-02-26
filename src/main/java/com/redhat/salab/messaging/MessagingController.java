@@ -145,9 +145,11 @@ public class MessagingController {
 			ConnectionFactory cf = (ConnectionFactory)context.getNamingContext().lookup(cfname);
 			context.setConnectionFactory(cf);
 			
-			// Workaround for localBindAddress issue
+			// Workaround for localBindAddress issue, when using discovery groups behind the remote connection factory
 			HornetQConnectionFactory hqcf = (HornetQConnectionFactory)cf;
-			hqcf.getDiscoveryGroupConfiguration().setLocalBindAdress(null);
+			if(hqcf.getDiscoveryGroupConfiguration() != null) {
+				hqcf.getDiscoveryGroupConfiguration().setLocalBindAdress(null);
+			}
 		}
 		
 		// Destination
