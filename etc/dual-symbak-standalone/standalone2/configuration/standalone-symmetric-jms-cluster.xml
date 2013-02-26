@@ -35,7 +35,7 @@
     </extensions>
     <paths>
    	<!-- root directory for all journals - must be single filesystem, or shared via NFS (RHEL only) or GFS2 -->
-        <path name="hornetq.journal.root.dir" path="/data/jboss-eap-6.0/journals" />
+        <path name="hornetq.journal.root.dir" path="/home/jowest/dev/servers/eap601/jboss-eap-6.0" />
         <!-- next two entries need to be flipped for server2 -->
 	<path name="hornetq.journal.active.dir" path="journalB" relative-to="hornetq.journal.root.dir" />
         <path name="hornetq.journal.backup.dir" path="journalA" relative-to="hornetq.journal.root.dir" />
@@ -244,6 +244,7 @@
                 </short-running-threads>
                 <long-running-threads>
                     <core-threads count="50"/>
+                    <queue-length count="50"/>
                     <max-threads count="50"/>
                     <keepalive-time time="10" unit="seconds"/>
                 </long-running-threads>
@@ -301,8 +302,7 @@
             </mail-session>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:messaging:1.2">
-	
-
+		
                 <hornetq-server>
                     <clustered>true</clustered>
                     <persistence-enabled>true</persistence-enabled>
@@ -342,6 +342,7 @@
                         <discovery-group name="dg-group1">
                             <socket-binding>messaging-group</socket-binding>
                             <refresh-timeout>10000</refresh-timeout>
+			    <initial-wait-timeout>10000</initial-wait-timeout>
                         </discovery-group>
                     </discovery-groups>
                     <cluster-connections>

@@ -16,6 +16,7 @@ import javax.jms.Session;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.hornetq.jms.client.HornetQConnectionFactory;
 import org.jboss.sasl.JBossSaslProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,6 +155,10 @@ public class MessagingController {
 			String cfname = settings.getConnectionFactoryName();
 			ConnectionFactory cf = (ConnectionFactory)context.getNamingContext().lookup(cfname);
 			context.setConnectionFactory(cf);
+			
+			// Workaround for localBindAddress issue
+			HornetQConnectionFactory hqcf = (HornetQConnectionFactory)cf;
+			hqcf.getDiscoveryGroupConfiguration().setLocalBindAdress(null);
 		}
 		
 		// Destination

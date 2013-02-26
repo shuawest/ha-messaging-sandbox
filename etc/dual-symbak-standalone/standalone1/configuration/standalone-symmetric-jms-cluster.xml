@@ -342,6 +342,7 @@
                         <discovery-group name="dg-group1">
                             <socket-binding>messaging-group</socket-binding>
                             <refresh-timeout>10000</refresh-timeout>
+			    <initial-wait-timeout>10000</initial-wait-timeout>
                         </discovery-group>
                     </discovery-groups>
                     <cluster-connections>
