@@ -380,7 +380,7 @@
                         <connection-factory name="RemoteConnectionFactory">
 			    <ha>true</ha>
 			    <connectors>
-                        	<connector-ref>netty</connector-ref>
+				<connector-ref connector-name="netty"/>
 			    </connectors>
                             <entries>
                                 <entry name="java:jboss/exported/jms/RemoteConnectionFactory"/>
