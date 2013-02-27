@@ -1,0 +1,41 @@
+# Add the following to the JBoss conf JAVA_OPTS
+# JAVA_OPTS="$JAVA_OPTS -Dorg.jboss.byteman.verbose -javaagent:${BYTEMAN_HOME}/lib/byteman.jar=script:${BYTEMAN_SCRIPTS}/<scriptname>.btm"
+
+RULE org.hornetq.api.core.DiscoveryGroupConfiguration constructor stacktrace
+CLASS org.hornetq.api.core.DiscoveryGroupConfiguration
+METHOD <init>
+AT ENTRY
+IF TRUE
+DO traceStack("\nBYTEMAN Setting of the local bind address\n", 50);
+ENDRULE
+
+RULE org.hornetq.api.core.DiscoveryGroupConfiguration setlocalbindaddress stacktrace
+CLASS org.hornetq.api.core.DiscoveryGroupConfiguration
+METHOD setLocalBindAdress
+AT ENTRY
+IF TRUE
+DO traceStack("\nBYTEMAN Setting of the local bind address\n", 50);
+ENDRULE
+
+RULE org.hornetq.api.core.DiscoveryGroupConfiguration getLocalBindAddress nuller
+CLASS org.hornetq.api.core.DiscoveryGroupConfiguration
+METHOD getLocalBindAddress
+AT EXIT
+IF TRUE
+DO debug("\nOverriding local bind address\n");
+#   return null;
+   return "10.15.60.201";
+ENDRULE
+
+RULE org.hornetq.core.cluster.impl.DiscoveryGroupImpl
+CLASS org.hornetq.core.cluster.impl.DiscoveryGroupImpl
+METHOD start
+AT ENTRY
+IF TRUE
+DO traceStack("\nBYTEMAN at calling org.hornetq.core.cluster.impl.DiscoveryGroupImpl.start before set" + $this.localBindAddress + "\n", 50);
+ENDRULE
+
+
+
+
+
